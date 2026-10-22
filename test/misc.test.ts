@@ -5,7 +5,10 @@ import { withBlock, withoutBlock } from "../src/git/hook.js";
 import { calendarToEvents, topLanguageOf } from "../src/github.js";
 import { computePet } from "../src/pet/engine.js";
 import { nameFromSeed, speciesForLanguage, SPECIES, spriteFor } from "../src/pet/species.js";
-import { escapeXml, readableOn, renderCard } from "../src/render/svg.js";
+import { escapeXml, renderCard } from "../src/render/svg.js";
+import { readableOn } from "../src/render/color.js";
+import { halfBlocks } from "../src/render/terminal.js";
+import { composeSprite } from "../src/pet/pixels.js";
 
 test("parseCommit sums lines and picks the main language", () => {
   const out = "abc123\x1f1767610000\n\n10\t2\tsrc/combat.luau\n3\t1\tREADME.md\n-\t-\tlogo.png\n1\t0\tsrc/x.ts\n";
@@ -73,6 +76,28 @@ test("the SVG card escapes text and is well-formed enough to render", () => {
   assert.ok(!svg.includes("<Bad"));
   assert.ok(svg.includes("prefers-color-scheme: dark"));
   assert.ok(!renderCard(pet, { theme: "dark" }).includes("prefers-color-scheme"));
+});
+
+test("the SVG card draws the pet in crisp pixels and stays small", () => {
+  for (const [mood, events, at] of [
+    ["happy", [{ t: 1000, lines: 5, lang: "Luau" }], 2000],
+    ["away", [{ t: 1000, lines: 5, lang: "Luau" }], 1000 + 8 * 86_400_000],
+  ] as const) {
+    const pet = computePet({ seed: "x", bornAt: 0 }, events, at);
+    assert.equal(pet.mood, mood);
+    const svg = renderCard(pet);
+    assert.ok(svg.includes('shape-rendering="crispEdges"'));
+    assert.ok(svg.includes("<path fill="));
+    assert.ok(!svg.includes('class="art'), "no ASCII art left in the card");
+    assert.ok(svg.length < 20_000, `card is ${svg.length} bytes`);
+  }
+});
+
+test("the terminal shows pixels as half blocks, two pixel rows per line", () => {
+  const rows = halfBlocks(composeSprite({ stage: "adult", species: "snek", mood: "happy", color: "#3572a5" }));
+  assert.ok(rows.length <= 10);
+  for (const row of rows) assert.equal(row.replace(/\x1b\[[0-9;]*m/g, "").length, 20);
+  assert.ok(rows.join("").includes("▀"));
 });
 
 test("pale language colours get darkened on light backgrounds", () => {

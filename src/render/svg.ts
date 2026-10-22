@@ -1,7 +1,19 @@
 // The animated SVG card for GitHub profile READMEs.
 
 import type { Pet } from "../pet/engine.js";
-import { MOOD_FACE, MOOD_LABEL, petArt, petColor, speech, stageProgress, title } from "./face.js";
+import {
+  BOWL,
+  CANVAS,
+  CLOUD,
+  DROP,
+  FIXED_PALETTE,
+  SPARKLE,
+  awayScene,
+  composeSprite,
+  type Grid,
+} from "../pet/pixels.js";
+import { readableOn } from "./color.js";
+import { MOOD_FACE, MOOD_LABEL, petColor, speech, stageProgress, title } from "./face.js";
 
 export type Theme = "auto" | "light" | "dark";
 
@@ -36,34 +48,6 @@ export function escapeXml(s: string): string {
   return s.replace(/[<>&"']/g, (c) => ({ "<": "&lt;", ">": "&gt;", "&": "&amp;", '"': "&quot;", "'": "&apos;" })[c]!);
 }
 
-function luminance(hex: string): number {
-  const n = parseInt(hex.slice(1), 16);
-  const ch = [(n >> 16) & 255, (n >> 8) & 255, n & 255].map((v) => {
-    const c = v / 255;
-    return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
-  });
-  return 0.2126 * ch[0]! + 0.7152 * ch[1]! + 0.0722 * ch[2]!;
-}
-
-function mix(hex: string, toward: string, amount: number): string {
-  const a = parseInt(hex.slice(1), 16);
-  const b = parseInt(toward.slice(1), 16);
-  const out = [16, 8, 0].map((shift) => {
-    const x = (a >> shift) & 255;
-    const y = (b >> shift) & 255;
-    return Math.round(x + (y - x) * amount);
-  });
-  return "#" + out.map((v) => v.toString(16).padStart(2, "0")).join("");
-}
-
-/** Keeps language colours readable: darkens pale ones on light, lightens dark ones on dark. */
-export function readableOn(color: string, theme: "light" | "dark"): string {
-  const lum = luminance(color);
-  if (theme === "light" && lum > 0.45) return mix(color, "#000000", 0.4);
-  if (theme === "dark" && lum < 0.12) return mix(color, "#ffffff", 0.5);
-  return color;
-}
-
 function vars(p: Palette, pet: string): string {
   return `--bg:${p.bg};--border:${p.border};--text:${p.text};--muted:${p.muted};--track:${p.track};--food:${p.food};--pet:${pet};`;
 }
@@ -71,17 +55,79 @@ function vars(p: Palette, pet: string): string {
 const W = 495;
 const H = 195;
 const HABITAT = { x: 12, y: 12, w: 170, h: 171 };
-const LINE = 17;
 const GROUND = HABITAT.y + HABITAT.h - 22;
+const PX = 6;
+const SPRITE_X = HABITAT.x + (HABITAT.w - CANVAS * PX) / 2;
+const SPRITE_Y = GROUND - 1 - CANVAS * PX;
 
-function artText(lines: string[], cls: string): string {
-  // Bottom-aligned so the pet stands on the ground line.
-  const top = GROUND - 12 - (lines.length - 1) * LINE;
+/**
+ * Draws a grid as one <path> per colour. Runs of same-coloured pixels in a row
+ * become a single rectangle, which keeps cards small.
+ */
+export function gridPaths(grid: Grid, x0: number, y0: number, px: number): string {
+  const byColor = new Map<string, string[]>();
+  grid.forEach((row, y) => {
+    let x = 0;
+    while (x < row.length) {
+      const color = row[x];
+      if (!color) {
+        x++;
+        continue;
+      }
+      let end = x;
+      while (row[end + 1] === color) end++;
+      const w = (end - x + 1) * px;
+      const d = `M${x0 + x * px} ${y0 + y * px}h${w}v${px}h-${w}z`;
+      (byColor.get(color) ?? byColor.set(color, []).get(color)!).push(d);
+      x = end + 1;
+    }
+  });
+  return [...byColor].map(([color, ds]) => `<path fill="${color}" d="${ds.join("")}"/>`).join("");
+}
+
+/** Only the pixels where `b` differs from `a`, e.g. the eyes when blinking. */
+function diff(a: Grid, b: Grid): Grid {
+  return b.map((row, y) => row.map((c, x) => (c !== a[y]![x] ? c : null)));
+}
+
+function small(rows: string[], x0: number, y0: number, px: number): string {
+  const grid: Grid = rows.map((row) => [...row].map((ch) => (ch === "." ? null : FIXED_PALETTE[ch]!)));
+  return gridPaths(grid, x0, y0, px);
+}
+
+function petLayer(pet: Pet): string {
+  if (pet.mood === "away") return `<g class="float">${gridPaths(awayScene(), SPRITE_X, SPRITE_Y, PX)}</g>`;
+
+  const opts = { stage: pet.stage, species: pet.species, mood: pet.mood, color: petColor(pet) };
+  const open = composeSprite(opts);
+  const blink = diff(open, composeSprite({ ...opts, blink: true }));
+  const hasBlink = blink.some((row) => row.some(Boolean));
+  const body = `<g class="pet ${pet.stage === "egg" ? "egg" : pet.mood}">${gridPaths(open, SPRITE_X, SPRITE_Y, PX)}${
+    hasBlink ? `<g class="closed">${gridPaths(blink, SPRITE_X, SPRITE_Y, PX)}</g>` : ""
+  }</g>`;
+
   const cx = HABITAT.x + HABITAT.w / 2;
-  const tspans = lines
-    .map((l, i) => `<tspan x="${cx}" y="${top + i * LINE}">${escapeXml(l)}</tspan>`)
-    .join("");
-  return `<text class="art ${cls}" text-anchor="middle" xml:space="preserve">${tspans}</text>`;
+  let extras = "";
+  if (pet.mood === "hyped") {
+    const spots: [number, number][] = [[16, 30], [166, 22], [166, 96], [16, 112]];
+    extras = spots
+      .map(([x, y], i) => `<g class="spark" style="animation-delay:${(i * 0.45).toFixed(2)}s">${small(SPARKLE, x, y, 4)}</g>`)
+      .join("");
+  } else if (pet.mood === "sad") {
+    const cloudX = cx - (CLOUD[0]!.length * 5) / 2;
+    const cloudY = HABITAT.y + 6;
+    extras =
+      small(CLOUD, cloudX, cloudY, 5) +
+      [0.25, 0.5, 0.75]
+        .map(
+          (f, i) =>
+            `<g class="drop" style="animation-delay:${(i * 0.4).toFixed(1)}s">${small(DROP, cloudX + Math.round(f * 50) - 2, cloudY + 26, 4)}</g>`,
+        )
+        .join("");
+  } else if (pet.mood === "hungry") {
+    extras = `<g class="bowl">${small(BOWL, HABITAT.x + HABITAT.w - 48, HABITAT.y + 12, 4)}</g>`;
+  }
+  return body + extras;
 }
 
 function bar(y: number, label: string, fraction: number, cls: string, value: string, delay: number): string {
@@ -106,17 +152,11 @@ export function renderCard(pet: Pet, opts: { theme?: Theme; login?: string } = {
   const rootVars = theme === "dark" ? dark : light;
   const autoDark = theme === "auto" ? `@media (prefers-color-scheme: dark) { svg { ${dark} } }` : "";
 
-  const away = pet.mood === "away";
-  const art = away
-    ? artText(petArt(pet), "pet float")
-    : `<g class="pet ${pet.mood}">${artText(petArt(pet), "open")}${artText(petArt(pet, true), "closed")}</g>`;
-
   const xpValue =
     pet.stage === "egg" ? "0 xp" : pet.nextStageXp === null ? `${pet.xp} xp` : `${pet.xp}/${pet.nextStageXp} xp`;
   const facts = [`${pet.commits} commit${pet.commits === 1 ? "" : "s"}`, `${pet.ageDays} days old`];
   if (pet.topLanguage) facts.push(pet.topLanguage);
   if (opts.login) facts.push(`@${opts.login}`);
-  const bob = pet.mood === "sad" ? "4s" : pet.mood === "hyped" ? "0.9s" : "2.2s";
 
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" role="img" aria-label="${escapeXml(`${title(pet)}: ${MOOD_LABEL[pet.mood]}, ${pet.fullness}% fed, ${pet.streak}-day streak`)}">
 <title>${escapeXml(title(pet))}</title>
@@ -124,7 +164,6 @@ export function renderCard(pet: Pet, opts: { theme?: Theme; login?: string } = {
 svg { ${rootVars} }
 ${autoDark}
 text { font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; fill: var(--text); }
-.art { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; font-size: 15px; font-weight: 700; fill: var(--pet); }
 .name { font-size: 18px; font-weight: 700; }
 .mood { font-size: 13px; fill: var(--muted); }
 .label, .value { font-size: 12px; fill: var(--muted); }
@@ -133,22 +172,28 @@ text { font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; fil
 .fill { transform-box: fill-box; transform-origin: left; animation: grow 0.9s ease-out both; }
 .fill.food { fill: var(--food); }
 .fill.xp { fill: var(--pet); }
-.pet { animation: bob ${bob} ease-in-out infinite; }
-.pet.hungry { animation-name: wiggle; }
-.closed { opacity: 0; animation: blink 4s infinite; }
-.open { animation: unblink 4s infinite; }
-.float { animation: bob 3s ease-in-out infinite; opacity: 0.7; }
+.pet { animation: hop 2.4s steps(1, end) infinite; }
+.pet.hyped { animation-duration: 1.1s; }
+.pet.sad { animation: none; }
+.pet.hungry { animation: shake 2.6s steps(1, end) infinite; }
+.pet.egg { animation: shake 3.2s steps(1, end) infinite; }
+.closed { opacity: 0; animation: blink 3.6s steps(1, end) infinite; }
+.spark { opacity: 0; animation: twinkle 1.8s ease-in-out infinite; }
+.drop { opacity: 0; animation: fall 1.2s linear infinite; }
+.bowl { animation: hop 1.6s steps(1, end) infinite; }
+.float { animation: hop 3s steps(1, end) infinite; opacity: 0.8; }
 @keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-@keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
-@keyframes wiggle { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-2px); } 75% { transform: translateX(2px); } }
-@keyframes blink { 0%, 93%, 100% { opacity: 0; } 95%, 98% { opacity: 1; } }
-@keyframes unblink { 0%, 93%, 100% { opacity: 1; } 95%, 98% { opacity: 0; } }
-@media (prefers-reduced-motion: reduce) { * { animation: none !important; } .closed { opacity: 0; } }
+@keyframes hop { 0%, 60%, 85%, 100% { transform: translateY(0); } 65%, 80% { transform: translateY(-${PX}px); } }
+@keyframes shake { 0%, 70%, 86%, 100% { transform: translateX(0); } 72% { transform: translateX(-${PX}px); } 76% { transform: translateX(${PX}px); } 80% { transform: translateX(-${PX}px); } 84% { transform: translateX(0); } }
+@keyframes blink { 0% { opacity: 0; } 90% { opacity: 1; } 95%, 100% { opacity: 0; } }
+@keyframes twinkle { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
+@keyframes fall { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(16px); } }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; } .closed, .drop { opacity: 0; } .spark { opacity: 1; } }
 </style>
 <rect x="0.5" y="0.5" width="${W - 1}" height="${H - 1}" rx="10" fill="var(--bg)" stroke="var(--border)"/>
 <rect x="${HABITAT.x}" y="${HABITAT.y}" width="${HABITAT.w}" height="${HABITAT.h}" rx="8" fill="var(--pet)" fill-opacity="0.09"/>
-<line x1="${HABITAT.x + 18}" x2="${HABITAT.x + HABITAT.w - 18}" y1="${GROUND}" y2="${GROUND}" stroke="var(--pet)" stroke-opacity="0.25" stroke-width="2" stroke-linecap="round"/>
-${art}
+<line x1="${HABITAT.x + 12}" x2="${HABITAT.x + HABITAT.w - 12}" y1="${GROUND}" y2="${GROUND}" stroke="var(--pet)" stroke-opacity="0.3" stroke-width="2" stroke-linecap="round"/>
+<g shape-rendering="crispEdges">${petLayer(pet)}</g>
 <text class="name" x="200" y="38">${escapeXml(title(pet))}</text>
 <text class="mood" x="200" y="59">${escapeXml(`${MOOD_LABEL[pet.mood]}  ${MOOD_FACE[pet.mood]}`)}</text>
 ${bar(76, "food", pet.fullness / 100, "food", `${pet.fullness}%`, 0)}

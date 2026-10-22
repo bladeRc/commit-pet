@@ -1,15 +1,59 @@
 // The pet in your terminal.
 
 import type { Pet } from "../pet/engine.js";
+import { CANVAS, awayScene, composeSprite, type Grid } from "../pet/pixels.js";
 import { SPECIES, STAGE_EMOJI } from "../pet/species.js";
+import { rgbOf } from "./color.js";
 import { MOOD_FACE, MOOD_LABEL, petArt, petColor, speech, stageProgress, title } from "./face.js";
 
-const useColor = (): boolean => process.stdout.isTTY === true && !process.env.NO_COLOR;
+// Same convention as Node itself: FORCE_COLOR wins, then NO_COLOR, then "is this a terminal?".
+const useColor = (): boolean =>
+  process.env.FORCE_COLOR ? process.env.FORCE_COLOR !== "0" : process.stdout.isTTY === true && !process.env.NO_COLOR;
+
+const fg = (hex: string): string => `\x1b[38;2;${rgbOf(hex).join(";")}m`;
+const bg = (hex: string): string => `\x1b[48;2;${rgbOf(hex).join(";")}m`;
 
 function rgb(hex: string, text: string): string {
-  if (!useColor()) return text;
-  const n = parseInt(hex.slice(1), 16);
-  return `\x1b[38;2;${(n >> 16) & 255};${(n >> 8) & 255};${n & 255}m${text}\x1b[0m`;
+  return useColor() ? `${fg(hex)}${text}\x1b[0m` : text;
+}
+
+/**
+ * Pixel art in the terminal: each character cell shows two pixels stacked,
+ * using "▀" with the top pixel as the text colour and the bottom one as the
+ * background. Empty pairs of rows at the top are trimmed.
+ */
+export function halfBlocks(grid: Grid): string[] {
+  let top = 0;
+  const empty = (y: number) => grid[y]?.every((c) => c === null) ?? true;
+  while (top < grid.length - 2 && empty(top) && empty(top + 1)) top += 2;
+
+  const rows: string[] = [];
+  for (let y = top; y < grid.length; y += 2) {
+    let line = "";
+    for (let x = 0; x < CANVAS; x++) {
+      const t = grid[y]![x] ?? null;
+      const b = grid[y + 1]?.[x] ?? null;
+      if (!t && !b) line += " ";
+      else if (t && !b) line += `${fg(t)}▀\x1b[0m`;
+      else if (!t && b) line += `${fg(b)}▄\x1b[0m`;
+      else line += `${fg(t!)}${bg(b!)}▀\x1b[0m`;
+    }
+    rows.push(line);
+  }
+  return rows;
+}
+
+const ASCII_WIDTH = 15;
+const PIXEL_WIDTH = CANVAS + 2;
+
+/** The pet's picture as rows of equal visible width. */
+function artRows(pet: Pet, blink = false): { rows: string[]; width: number } {
+  if (!useColor()) return { rows: petArt(pet, blink).map((l) => l.padEnd(ASCII_WIDTH)), width: ASCII_WIDTH };
+  const grid =
+    pet.mood === "away"
+      ? awayScene()
+      : composeSprite({ stage: pet.stage, species: pet.species, mood: pet.mood, color: petColor(pet), blink });
+  return { rows: halfBlocks(grid).map((l) => ` ${l} `), width: PIXEL_WIDTH };
 }
 
 const bold = (s: string): string => (useColor() ? `\x1b[1m${s}\x1b[0m` : s);
@@ -46,20 +90,16 @@ export function statLines(pet: Pet): string[] {
   ];
 }
 
-const ART_WIDTH = 15;
-
 /** One frame: art on the left, stats on the right, speech underneath. */
 export function frame(pet: Pet, opts: { blink?: boolean; bob?: boolean } = {}): string[] {
-  const art = petArt(pet, opts.blink);
+  const { rows: art, width } = artRows(pet, opts.blink);
   const stats = statLines(pet);
   const height = Math.max(art.length + 1, stats.length);
   const top = Math.ceil((height - art.length) / 2) - (opts.bob ? 1 : 0);
-  const color = petColor(pet);
 
   const rows: string[] = [];
   for (let i = 0; i < height; i++) {
-    const a = art[i - top] ?? "";
-    rows.push(rgb(color, a.padEnd(ART_WIDTH)) + "  " + (stats[i] ?? ""));
+    rows.push((art[i - top] ?? " ".repeat(width)) + "  " + (stats[i] ?? ""));
   }
   rows.push("", dim(`  “${speech(pet)}”`));
   return rows;

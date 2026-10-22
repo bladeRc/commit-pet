@@ -1,10 +1,9 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="495" height="195" viewBox="0 0 495 195" role="img" aria-label="Pipko the Teen: hyped!, 99% fed, 14-day streak">
+<svg xmlns="http://www.w3.org/2000/svg" width="495" height="195" viewBox="0 0 495 195" role="img" aria-label="Pipko the Teen: hyped!, 97% fed, 14-day streak">
 <title>Pipko the Teen</title>
 <style>
 svg { --bg:#ffffff;--border:#d0d7de;--text:#1f2328;--muted:#59636e;--track:#eaeef2;--food:#1a7f37;--pet:#3178c6; }
 @media (prefers-color-scheme: dark) { svg { --bg:#0d1117;--border:#30363d;--text:#e6edf3;--muted:#9198a1;--track:#21262d;--food:#3fb950;--pet:#3178c6; } }
 text { font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; fill: var(--text); }
-.art { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace; font-size: 15px; font-weight: 700; fill: var(--pet); }
 .name { font-size: 18px; font-weight: 700; }
 .mood { font-size: 13px; fill: var(--muted); }
 .label, .value { font-size: 12px; fill: var(--muted); }
@@ -13,25 +12,31 @@ text { font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; fil
 .fill { transform-box: fill-box; transform-origin: left; animation: grow 0.9s ease-out both; }
 .fill.food { fill: var(--food); }
 .fill.xp { fill: var(--pet); }
-.pet { animation: bob 0.9s ease-in-out infinite; }
-.pet.hungry { animation-name: wiggle; }
-.closed { opacity: 0; animation: blink 4s infinite; }
-.open { animation: unblink 4s infinite; }
-.float { animation: bob 3s ease-in-out infinite; opacity: 0.7; }
+.pet { animation: hop 2.4s steps(1, end) infinite; }
+.pet.hyped { animation-duration: 1.1s; }
+.pet.sad { animation: none; }
+.pet.hungry { animation: shake 2.6s steps(1, end) infinite; }
+.pet.egg { animation: shake 3.2s steps(1, end) infinite; }
+.closed { opacity: 0; animation: blink 3.6s steps(1, end) infinite; }
+.spark { opacity: 0; animation: twinkle 1.8s ease-in-out infinite; }
+.drop { opacity: 0; animation: fall 1.2s linear infinite; }
+.bowl { animation: hop 1.6s steps(1, end) infinite; }
+.float { animation: hop 3s steps(1, end) infinite; opacity: 0.8; }
 @keyframes grow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
-@keyframes bob { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
-@keyframes wiggle { 0%, 100% { transform: translateX(0); } 25% { transform: translateX(-2px); } 75% { transform: translateX(2px); } }
-@keyframes blink { 0%, 93%, 100% { opacity: 0; } 95%, 98% { opacity: 1; } }
-@keyframes unblink { 0%, 93%, 100% { opacity: 1; } 95%, 98% { opacity: 0; } }
-@media (prefers-reduced-motion: reduce) { * { animation: none !important; } .closed { opacity: 0; } }
+@keyframes hop { 0%, 60%, 85%, 100% { transform: translateY(0); } 65%, 80% { transform: translateY(-6px); } }
+@keyframes shake { 0%, 70%, 86%, 100% { transform: translateX(0); } 72% { transform: translateX(-6px); } 76% { transform: translateX(6px); } 80% { transform: translateX(-6px); } 84% { transform: translateX(0); } }
+@keyframes blink { 0% { opacity: 0; } 90% { opacity: 1; } 95%, 100% { opacity: 0; } }
+@keyframes twinkle { 0%, 100% { opacity: 0; } 50% { opacity: 1; } }
+@keyframes fall { 0% { opacity: 1; transform: translateY(0); } 100% { opacity: 0; transform: translateY(16px); } }
+@media (prefers-reduced-motion: reduce) { * { animation: none !important; } .closed, .drop { opacity: 0; } .spark { opacity: 1; } }
 </style>
 <rect x="0.5" y="0.5" width="494" height="194" rx="10" fill="var(--bg)" stroke="var(--border)"/>
 <rect x="12" y="12" width="170" height="171" rx="8" fill="var(--pet)" fill-opacity="0.09"/>
-<line x1="30" x2="164" y1="161" y2="161" stroke="var(--pet)" stroke-opacity="0.25" stroke-width="2" stroke-linecap="round"/>
-<g class="pet hyped"><text class="art open" text-anchor="middle" xml:space="preserve"><tspan x="97" y="64">             </tspan><tspan x="97" y="81">   .-----.   </tspan><tspan x="97" y="98">  ( *   * )  </tspan><tspan x="97" y="115">  (   D   )  </tspan><tspan x="97" y="132">   \_____/   </tspan><tspan x="97" y="149">    ^   ^    </tspan></text><text class="art closed" text-anchor="middle" xml:space="preserve"><tspan x="97" y="64">             </tspan><tspan x="97" y="81">   .-----.   </tspan><tspan x="97" y="98">  ( -   - )  </tspan><tspan x="97" y="115">  (   D   )  </tspan><tspan x="97" y="132">   \_____/   </tspan><tspan x="97" y="149">    ^   ^    </tspan></text></g>
+<line x1="24" x2="170" y1="161" y2="161" stroke="var(--pet)" stroke-opacity="0.3" stroke-width="2" stroke-linecap="round"/>
+<g shape-rendering="crispEdges"><g class="pet hyped"><path fill="#132e4b" d="M61 76h12v6h-12zM121 76h12v6h-12zM55 82h6v6h-6zM73 82h6v6h-6zM115 82h6v6h-6zM133 82h6v6h-6zM55 88h6v6h-6zM79 88h42v6h-42zM133 88h6v6h-6zM49 94h6v6h-6zM139 94h6v6h-6zM49 100h6v6h-6zM139 100h6v6h-6zM49 106h6v6h-6zM139 106h6v6h-6zM49 112h6v6h-6zM139 112h6v6h-6zM49 118h6v6h-6zM139 118h6v6h-6zM49 124h6v6h-6zM139 124h6v6h-6zM49 130h6v6h-6zM139 130h6v6h-6zM55 136h6v6h-6zM133 136h6v6h-6zM61 142h72v6h-72zM61 148h6v6h-6zM79 148h6v6h-6zM109 148h6v6h-6zM127 148h6v6h-6zM61 154h24v6h-24zM109 154h24v6h-24z"/><path fill="#83aedd" d="M61 82h6v6h-6zM121 82h6v6h-6zM61 88h6v6h-6zM55 94h6v6h-6zM55 100h6v6h-6z"/><path fill="#3178c6" d="M67 82h6v6h-6zM127 82h6v6h-6zM67 88h12v6h-12zM121 88h12v6h-12zM61 94h78v6h-78zM61 100h12v6h-12zM85 100h24v6h-24zM121 100h18v6h-18zM55 106h18v6h-18zM85 106h24v6h-24zM121 106h18v6h-18zM55 112h6v6h-6zM73 112h48v6h-48zM133 112h6v6h-6zM55 118h30v6h-30zM109 118h30v6h-30zM55 124h36v6h-36zM103 124h36v6h-36zM61 130h72v6h-72zM67 148h12v6h-12zM115 148h12v6h-12z"/><path fill="#1b1f24" d="M73 100h6v6h-6zM109 100h6v6h-6zM73 106h12v6h-12zM109 106h12v6h-12zM85 118h24v6h-24zM91 124h12v6h-12z"/><path fill="#ffffff" d="M79 100h6v6h-6zM115 100h6v6h-6z"/><path fill="#ff9eb5" d="M61 112h12v6h-12zM121 112h12v6h-12z"/><path fill="#255a95" d="M55 130h6v6h-6zM133 130h6v6h-6zM61 136h72v6h-72z"/><g class="closed"><path fill="#3178c6" d="M73 100h12v6h-12zM109 100h12v6h-12z"/></g></g><g class="spark" style="animation-delay:0.00s"><path fill="#ffd33d" d="M20 30h4v4h-4zM16 34h4v4h-4zM24 34h4v4h-4zM20 38h4v4h-4z"/><path fill="#ffffff" d="M20 34h4v4h-4z"/></g><g class="spark" style="animation-delay:0.45s"><path fill="#ffd33d" d="M170 22h4v4h-4zM166 26h4v4h-4zM174 26h4v4h-4zM170 30h4v4h-4z"/><path fill="#ffffff" d="M170 26h4v4h-4z"/></g><g class="spark" style="animation-delay:0.90s"><path fill="#ffd33d" d="M170 96h4v4h-4zM166 100h4v4h-4zM174 100h4v4h-4zM170 104h4v4h-4z"/><path fill="#ffffff" d="M170 100h4v4h-4z"/></g><g class="spark" style="animation-delay:1.35s"><path fill="#ffd33d" d="M20 112h4v4h-4zM16 116h4v4h-4zM24 116h4v4h-4zM20 120h4v4h-4z"/><path fill="#ffffff" d="M20 116h4v4h-4z"/></g></g>
 <text class="name" x="200" y="38">Pipko the Teen</text>
 <text class="mood" x="200" y="59">hyped!  ^o^</text>
-<text class="label" x="200" y="84">food</text><rect x="252" y="76" width="160" height="9" rx="4.5" fill="var(--track)"/><rect class="fill food" style="animation-delay:0s" x="252" y="76" width="158.4" height="9" rx="4.5"/><text class="value" x="481" y="84" text-anchor="end">99%</text>
+<text class="label" x="200" y="84">food</text><rect x="252" y="76" width="160" height="9" rx="4.5" fill="var(--track)"/><rect class="fill food" style="animation-delay:0s" x="252" y="76" width="155.2" height="9" rx="4.5"/><text class="value" x="481" y="84" text-anchor="end">97%</text>
 <text class="label" x="200" y="108">xp</text><rect x="252" y="100" width="160" height="9" rx="4.5" fill="var(--track)"/><rect class="fill xp" style="animation-delay:0.15s" x="252" y="100" width="21.3" height="9" rx="4.5"/><text class="value" x="481" y="108" text-anchor="end">210/600 xp</text>
 <text class="label" x="200" y="136">streak</text>
 <text class="value" x="252" y="136">🔥 14 days  ·  best 14</text>

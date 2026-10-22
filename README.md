@@ -4,7 +4,7 @@
 
 # commit-pet
 
-**A tiny pet that eats your commits.** It lives in your terminal *and* on your GitHub profile.<br>
+**A tiny pixel pet that eats your commits.** It lives in your terminal *and* on your GitHub profile.<br>
 Feed it or it gets hungry, then sad, then it runs away.
 
 </div>
@@ -16,6 +16,8 @@ commit-pet init
 ```
 
 Make a commit and your egg hatches. Keep committing and it grows up into a creature based on the language you write most.
+
+Every pet is hand-drawn pixel art, shaded in your language's color. It hops, blinks, sparkles when you're on a streak and gets a rain cloud when you're not. In the terminal it's drawn with colored half-block characters (any modern terminal works; plain terminals and `NO_COLOR` get an ASCII version).
 
 ## How it works
 

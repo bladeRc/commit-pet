@@ -1,11 +1,12 @@
 {
   "name": "commit-pet",
-  "version": "0.1.0",
-  "description": "A tiny pet that lives in your terminal and on your GitHub profile. Feed it commits or it runs away.",
+  "version": "0.2.0",
+  "description": "A tiny pixel pet that lives in your terminal and on your GitHub profile. Feed it commits or it runs away.",
   "keywords": [
     "git",
     "tamagotchi",
     "pet",
+    "pixel-art",
     "terminal",
     "cli",
     "github-profile",
