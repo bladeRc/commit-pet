@@ -1,0 +1,58 @@
+name: commit-pet
+description: Keep an animated pet on your GitHub profile, fed by your real contributions.
+author: commit-pet contributors
+branding:
+  icon: heart
+  color: purple
+
+inputs:
+  username:
+    description: Whose contributions feed the pet.
+    default: ${{ github.repository_owner }}
+  out:
+    description: Where to write the SVG card, relative to the repo root.
+    default: pet.svg
+  theme:
+    description: auto (follows the viewer's light/dark setting), light or dark.
+    default: auto
+  token:
+    description: Token used to read public contributions from the GitHub API.
+    default: ${{ github.token }}
+  commit:
+    description: Commit and push the card when it changes.
+    default: "true"
+
+runs:
+  using: composite
+  steps:
+    - name: Build commit-pet
+      shell: bash
+      run: |
+        cd "$GITHUB_ACTION_PATH"
+        npm ci --ignore-scripts --no-audit --no-fund --loglevel=error
+        npm run build --silent
+
+    - name: Draw the pet
+      shell: bash
+      env:
+        GITHUB_TOKEN: ${{ inputs.token }}
+        CP_USER: ${{ inputs.username }}
+        CP_OUT: ${{ inputs.out }}
+        CP_THEME: ${{ inputs.theme }}
+      run: node "$GITHUB_ACTION_PATH/dist/src/cli.js" card --github "$CP_USER" --out "$CP_OUT" --theme "$CP_THEME"
+
+    - name: Commit the card
+      if: inputs.commit == 'true'
+      shell: bash
+      env:
+        CP_OUT: ${{ inputs.out }}
+      run: |
+        git add -- "$CP_OUT"
+        if git diff --cached --quiet; then
+          echo "Pet card unchanged."
+          exit 0
+        fi
+        git -c user.name="github-actions[bot]" \
+            -c user.email="41898282+github-actions[bot]@users.noreply.github.com" \
+            commit -m "Feed commit-pet 🐣"
+        git push

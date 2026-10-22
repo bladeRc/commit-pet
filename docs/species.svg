@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="680" height="450" viewBox="0 0 680 450" role="img" aria-label="All commit-pet species">
+<style>
+svg { --bg:#ffffff; --border:#d0d7de; --text:#1f2328; --muted:#59636e; }
+@media (prefers-color-scheme: dark) { svg { --bg:#0d1117; --border:#30363d; --text:#e6edf3; --muted:#9198a1; } .art { fill: var(--cd) !important; } }
+.cell { fill: var(--bg); stroke: var(--border); }
+.art { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: 12px; font-weight: 700; fill: var(--c); }
+.name { font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; font-size: 14px; font-weight: 700; fill: var(--text); }
+.lang { font-family: -apple-system, "Segoe UI", Helvetica, Arial, sans-serif; font-size: 11.5px; fill: var(--muted); }
+</style>
+<g style="--c:#00a2ff;--cd:#00a2ff">
+<rect class="cell" x="6" y="6" width="158" height="138" rx="10"/>
+<text class="art" text-anchor="middle" xml:space="preserve"><tspan x="85" y="34">  +-------+  </tspan><tspan x="85" y="48">  | o   o |  </tspan><tspan x="85" y="62">  |   w   |  </tspan><tspan x="85" y="76">  +-------+  </tspan><tspan x="85" y="90">   |_| |_|   </tspan></text>
+<text class="name" x="85" y="118" text-anchor="middle">Blox</text>
+<text class="lang" x="85" y="134" text-anchor="middle">Luau / Lua</text>
+</g>
+<g style="--c:#3178c6;--cd:#3178c6">
+<rect class="cell" x="176" y="6" width="158" height="138" rx="10"/>
+<text class="art" text-anchor="middle" xml:space="preserve"><tspan x="255" y="34">  .-------.  </tspan><tspan x="255" y="48">  | {   } |  </tspan><tspan x="255" y="62">  | o   o |  </tspan><tspan x="255" y="76">  |   w   |  </tspan><tspan x="255" y="90">  &apos;-------&apos;  </tspan></text>
+<text class="name" x="255" y="118" text-anchor="middle">Typo</text>
+<text class="lang" x="255" y="134" text-anchor="middle">TypeScript</text>
+</g>
+<g style="--c:#918636;--cd:#f1e05a">
+<rect class="cell" x="346" y="6" width="158" height="138" rx="10"/>
+<text class="art" text-anchor="middle" xml:space="preserve"><tspan x="425" y="41">    .---.    </tspan><tspan x="425" y="55">  .&apos; o o &apos;.  </tspan><tspan x="425" y="69"> (    w    ) </tspan><tspan x="425" y="83">  &apos;~~~~~~~&apos;  </tspan></text>
+<text class="name" x="425" y="118" text-anchor="middle">Jello</text>
+<text class="lang" x="425" y="134" text-anchor="middle">JavaScript</text>
+</g>
+<g style="--c:#3572a5;--cd:#3572a5">
+<rect class="cell" x="516" y="6" width="158" height="138" rx="10"/>
+<text class="art" text-anchor="middle" xml:space="preserve"><tspan x="595" y="34">    .---.    </tspan><tspan x="595" y="48">   ( o o )   </tspan><tspan x="595" y="62">    \ w /    </tspan><tspan x="595" y="76">  .--) (--.  </tspan><tspan x="595" y="90"> (____)____) </tspan></text>
+<text class="name" x="595" y="118" text-anchor="middle">Snek</text>
+<text class="lang" x="595" y="134" text-anchor="middle">Python</text>
+</g>
+<g style="--c:#dea584;--cd:#dea584">
+<rect class="cell" x="6" y="156" width="158" height="138" rx="10"/>
+<text class="art" text-anchor="middle" xml:space="preserve"><tspan x="85" y="184"> (\/)   (\/) </tspan><tspan x="85" y="198">  \ \___/ /  </tspan><tspan x="85" y="212">  ( o   o )  </tspan><tspan x="85" y="226">  (   w   )  </tspan><tspan x="85" y="240">  /|/   \|\  </tspan></text>
+<text class="name" x="85" y="268" text-anchor="middle">Crabby</text>
+<text class="lang" x="85" y="284" text-anchor="middle">Rust</text>
+</g>
+<g style="--c:#00add8;--cd:#00add8">
+<rect class="cell" x="176" y="156" width="158" height="138" rx="10"/>
+<text class="art" text-anchor="middle" xml:space="preserve"><tspan x="255" y="191">  (\_____/)  </tspan><tspan x="255" y="205">  ( o   o )  </tspan><tspan x="255" y="219">  (   w   )  </tspan><tspan x="255" y="233">  (&quot;)___(&quot;)  </tspan></text>
+<text class="name" x="255" y="268" text-anchor="middle">Zoomer</text>
+<text class="lang" x="255" y="284" text-anchor="middle">Go</text>
+</g>
+<g style="--c:#b07219;--cd:#b07219">
+<rect class="cell" x="346" y="156" width="158" height="138" rx="10"/>
+<text class="art" text-anchor="middle" xml:space="preserve"><tspan x="425" y="184">    ) ) )    </tspan><tspan x="425" y="198">  .-------.  </tspan><tspan x="425" y="212">  | o   o |] </tspan><tspan x="425" y="226">  |   w   |  </tspan><tspan x="425" y="240">  &apos;-------&apos;  </tspan></text>
+<text class="name" x="425" y="268" text-anchor="middle">Beanie</text>
+<text class="lang" x="425" y="284" text-anchor="middle">Java / Kotlin</text>
+</g>
+<g style="--c:#f34b7d;--cd:#f34b7d">
+<rect class="cell" x="516" y="156" width="158" height="138" rx="10"/>
+<text class="art" text-anchor="middle" xml:space="preserve"><tspan x="595" y="184">      *      </tspan><tspan x="595" y="198">     / \     </tspan><tspan x="595" y="212">    / o \    </tspan><tspan x="595" y="226">   /  w  \   </tspan><tspan x="595" y="240">  /_______\  </tspan></text>
+<text class="name" x="595" y="268" text-anchor="middle">Pointy</text>
+<text class="lang" x="595" y="284" text-anchor="middle">C / C++ / C#</text>
+</g>
+<g style="--c:#701516;--cd:#b88a8b">
+<rect class="cell" x="6" y="306" width="158" height="138" rx="10"/>
+<text class="art" text-anchor="middle" xml:space="preserve"><tspan x="85" y="334">   _______   </tspan><tspan x="85" y="348">  /_\___/_\  </tspan><tspan x="85" y="362">  \ o   o /  </tspan><tspan x="85" y="376">   \  w  /   </tspan><tspan x="85" y="390">    \___/    </tspan></text>
+<text class="name" x="85" y="418" text-anchor="middle">Gem</text>
+<text class="lang" x="85" y="434" text-anchor="middle">Ruby</text>
+</g>
+<g style="--c:#e34c26;--cd:#e34c26">
+<rect class="cell" x="176" y="306" width="158" height="138" rx="10"/>
+<text class="art" text-anchor="middle" xml:space="preserve"><tspan x="255" y="327">   &lt;div&gt;     </tspan><tspan x="255" y="341">  .-------.  </tspan><tspan x="255" y="355">  | o   o |  </tspan><tspan x="255" y="369">  |   w   |  </tspan><tspan x="255" y="383">  &apos;-------&apos;  </tspan><tspan x="255" y="397">     &lt;/div&gt;  </tspan></text>
+<text class="name" x="255" y="418" text-anchor="middle">Stylo</text>
+<text class="lang" x="255" y="434" text-anchor="middle">HTML / CSS</text>
+</g>
+<g style="--c:#528631;--cd:#89e051">
+<rect class="cell" x="346" y="306" width="158" height="138" rx="10"/>
+<text class="art" text-anchor="middle" xml:space="preserve"><tspan x="425" y="341">     _____   </tspan><tspan x="425" y="355">   _/#####\  </tspan><tspan x="425" y="369">  (o)w####|  </tspan><tspan x="425" y="383">   ^^-----^^ </tspan></text>
+<text class="name" x="425" y="418" text-anchor="middle">Shelly</text>
+<text class="lang" x="425" y="434" text-anchor="middle">Shell</text>
+</g>
+<g style="--c:#8957e5;--cd:#8957e5">
+<rect class="cell" x="516" y="306" width="158" height="138" rx="10"/>
+<text class="art" text-anchor="middle" xml:space="preserve"><tspan x="595" y="341">   .-----.   </tspan><tspan x="595" y="355">  /  o o  \  </tspan><tspan x="595" y="369"> |    w    | </tspan><tspan x="595" y="383">  \_______/  </tspan></text>
+<text class="name" x="595" y="418" text-anchor="middle">Blob</text>
+<text class="lang" x="595" y="434" text-anchor="middle">everything else</text>
+</g>
+</svg>

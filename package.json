@@ -1,0 +1,46 @@
+{
+  "name": "commit-pet",
+  "version": "0.1.0",
+  "description": "A tiny pet that lives in your terminal and on your GitHub profile. Feed it commits or it runs away.",
+  "keywords": [
+    "git",
+    "tamagotchi",
+    "pet",
+    "terminal",
+    "cli",
+    "github-profile",
+    "readme",
+    "github-action",
+    "streak"
+  ],
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bladeRc/commit-pet.git"
+  },
+  "homepage": "https://github.com/bladeRc/commit-pet#readme",
+  "bugs": "https://github.com/bladeRc/commit-pet/issues",
+  "type": "module",
+  "bin": {
+    "commit-pet": "dist/src/cli.js"
+  },
+  "files": [
+    "dist/src",
+    "action.yml",
+    "README.md",
+    "LICENSE"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "build": "tsc",
+    "test": "tsc && node --test dist/test/*.test.js",
+    "samples": "tsc && node dist/scripts/samples.js",
+    "prepublishOnly": "npm run build"
+  },
+  "devDependencies": {
+    "@types/node": "^20.19.0",
+    "typescript": "^5.9.0"
+  }
+}
