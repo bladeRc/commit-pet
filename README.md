@@ -66,7 +66,7 @@ Your profile pet is fed by your public GitHub contributions from the last 12 mon
      pet:
        runs-on: ubuntu-latest
        steps:
-         - uses: actions/checkout@v4
+         - uses: actions/checkout@v7
          - uses: bladeRc/commit-pet@main
    ```
 
